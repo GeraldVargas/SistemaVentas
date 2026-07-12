@@ -1,8 +1,59 @@
-:root {
-  --color-primary: #D35400;    /* Naranja Teja */
-  --color-secondary: #4A4A4A;  /* Gris Plomo */
-  --color-dark: #1A1A1A;       /* Negro */
-  --color-light: #FFFFFF;      /* Blanco */
-  --color-gray: #E5E5E5;       /* Gris Claro */
-  --color-gray-dark: #2D2D2D;  /* Gris Oscuro */
+@import "tailwindcss";
+
+/* Paleta de colores personalizada */
+@theme {
+  --color-primary: #D35400;
+  --color-secondary: #4A4A4A;
+  --color-dark: #1A1A1A;
+  --color-light: #FFFFFF;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f3f4f6;
+  color: #1A1A1A;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #E5E5E5;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4A4A4A;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D35400;
+}
+
+/* Modo oscuro */
+.dark {
+  background-color: #1A1A1A;
+  color: #FFFFFF;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #2D2D2D;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #666;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #D35400;
 }
