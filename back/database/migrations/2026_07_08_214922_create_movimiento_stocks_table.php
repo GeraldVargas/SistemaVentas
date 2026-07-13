@@ -16,8 +16,10 @@ return new class extends Migration
             $table->decimal('stock_anterior', 12, 2)->default(0);
             $table->decimal('stock_nuevo', 12, 2)->default(0);
             $table->text('motivo')->nullable();
-            $table->nullableMorphs('referencia');
-            $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->string('referencia_type')->nullable();
+            $table->unsignedBigInteger('referencia_id')->nullable();
+            $table->index(['referencia_type', 'referencia_id']);
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }

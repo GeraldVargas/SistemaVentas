@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('sku')->unique();
-            $table->string('codigo_barras')->nullable();
+            $table->string('codigo_barras')->nullable()->unique();
             $table->text('descripcion')->nullable();
             $table->decimal('precio_compra', 12, 2)->default(0);
             $table->decimal('precio_venta', 12, 2)->default(0);
