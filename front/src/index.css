@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
-/* Paleta de colores personalizada */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: #D35400;
   --color-secondary: #4A4A4A;
@@ -20,7 +21,6 @@ body {
   color: #1A1A1A;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -40,20 +40,15 @@ body {
   background: #D35400;
 }
 
-/* Modo oscuro */
-.dark {
-  background-color: #1A1A1A;
-  color: #FFFFFF;
-}
-
-.dark ::-webkit-scrollbar-track {
+/* Scrollbar en modo oscuro (sí funciona porque no depende de Tailwind) */
+html.dark ::-webkit-scrollbar-track {
   background: #2D2D2D;
 }
 
-.dark ::-webkit-scrollbar-thumb {
+html.dark ::-webkit-scrollbar-thumb {
   background: #666;
 }
 
-.dark ::-webkit-scrollbar-thumb:hover {
+html.dark ::-webkit-scrollbar-thumb:hover {
   background: #D35400;
 }

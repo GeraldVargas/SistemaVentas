@@ -1,31 +1,20 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import {
-  HomeIcon,
-  CubeIcon,
-  TagIcon,
-  UsersIcon,
-  ShoppingCartIcon,
-  ChartBarIcon,
-  DocumentTextIcon,
-  Cog6ToothIcon,
-  UserGroupIcon,
-  ArrowRightOnRectangleIcon,
-} from '@heroicons/react/24/outline';
+import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 
 const menuItems = [
-  { name: 'Dashboard', path: '/dashboard', icon: HomeIcon, roles: ['admin', 'vendedor', 'financiero'] },
-  { name: 'Productos', path: '/productos', icon: CubeIcon, roles: ['admin', 'vendedor', 'financiero'] },
-  { name: 'Categorías', path: '/categorias', icon: TagIcon, roles: ['admin', 'vendedor', 'financiero'] },
-  { name: 'Clientes', path: '/clientes', icon: UsersIcon, roles: ['admin', 'vendedor'] },
-  { name: 'Punto de Venta', path: '/pos', icon: ShoppingCartIcon, roles: ['admin', 'vendedor'] },
-  { name: 'Stock', path: '/stock', icon: ChartBarIcon, roles: ['admin', 'vendedor', 'financiero'] },
-  { name: 'Reportes', path: '/reportes', icon: DocumentTextIcon, roles: ['admin', 'financiero'] },
-  { name: 'Usuarios', path: '/usuarios', icon: UserGroupIcon, roles: ['admin'] },
-  { name: 'Configuración', path: '/configuracion', icon: Cog6ToothIcon, roles: ['admin'] },
+  { name: 'Dashboard', path: '/dashboard', roles: ['admin', 'vendedor', 'financiero'] },
+  { name: 'Productos', path: '/productos', roles: ['admin', 'vendedor', 'financiero'] },
+  { name: 'Categorías', path: '/categorias', roles: ['admin', 'vendedor', 'financiero'] },
+  { name: 'Clientes', path: '/clientes', roles: ['admin', 'vendedor'] },
+  { name: 'Punto de Venta', path: '/pos', roles: ['admin', 'vendedor'] },
+  { name: 'Stock', path: '/stock', roles: ['admin', 'vendedor', 'financiero'] },
+  { name: 'Reportes', path: '/reportes', roles: ['admin', 'financiero'] },
+  { name: 'Usuarios', path: '/usuarios', roles: ['admin'] },
+  { name: 'Configuración', path: '/configuracion', roles: ['admin'] },
 ];
 
-const Sidebar = ({ isOpen, toggleSidebar, user }) => {
+const Sidebar = ({ isOpen, toggleSidebar }) => {
   const location = useLocation();
   const { hasRole, logout } = useAuth();
 
@@ -33,26 +22,30 @@ const Sidebar = ({ isOpen, toggleSidebar, user }) => {
     return item.roles.some((role) => hasRole(role));
   });
 
+  const handleLinkClick = () => {
+    if (isOpen) {
+      toggleSidebar();
+    }
+  };
+
   return (
     <>
-      {/* Overlay para mobile: cierra el sidebar al tocar fuera */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-20 md:hidden"
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
           onClick={toggleSidebar}
         />
       )}
 
       <aside
         className={`
-          bg-[#1A1A1A] text-white w-64 flex-shrink-0 transition-transform duration-300
-          fixed md:relative h-full z-30 flex flex-col
-          ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-          md:w-64
+          bg-[#1A1A1A] text-white w-72 flex-shrink-0 transition-transform duration-300
+          fixed left-0 top-0 h-full z-50 flex flex-col md:hidden
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          shadow-2xl shadow-black/30
         `}
       >
-        {/* Logo con efecto de texto animado */}
-        <div className="flex items-center justify-center h-16 border-b border-[#4A4A4A] gap-1.5">
+        <div className="flex items-center justify-center h-16 border-b border-[#4A4A4A] gap-1.5 px-4">
           <h1 className="brand-loader">
             <span>Urkupiña</span>
           </h1>
@@ -61,14 +54,13 @@ const Sidebar = ({ isOpen, toggleSidebar, user }) => {
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {filteredMenu.map((item) => {
-            const Icon = item.icon;
             const isActive = location.pathname === item.path;
 
             return (
               <Link
                 key={item.path}
                 to={item.path}
-                onClick={() => { if (window.innerWidth < 768) toggleSidebar(); }}
+                onClick={handleLinkClick}
                 className={`
                   relative flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200
                   ${isActive
@@ -80,7 +72,6 @@ const Sidebar = ({ isOpen, toggleSidebar, user }) => {
                 {isActive && (
                   <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r-full bg-white/70" />
                 )}
-                <Icon className="w-5 h-5" />
                 <span className="text-sm font-medium">{item.name}</span>
               </Link>
             );
@@ -98,7 +89,6 @@ const Sidebar = ({ isOpen, toggleSidebar, user }) => {
         </div>
 
         <style>{`
-          /* --- Texto del logo (Uiverse: kat_2522, adaptado) --- */
           .brand-loader {
             position: relative;
             display: inline-block;

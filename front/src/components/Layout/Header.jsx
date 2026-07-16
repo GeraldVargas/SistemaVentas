@@ -1,33 +1,37 @@
 import { useAuth } from '../../hooks/useAuth';
 import { useState, useEffect } from 'react';
 
-const Header = ({ toggleSidebar }) => {
+const getSavedTheme = () => {
+  if (typeof window === 'undefined') return false;
+  return localStorage.getItem('theme') === 'dark';
+};
+
+const Header = ({ toggleSidebar, sidebarOpen }) => {
   const { user } = useAuth();
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(getSavedTheme);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      setIsDarkMode(true);
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
+    document.documentElement.classList.toggle('dark', isDarkMode);
+    document.documentElement.style.colorScheme = isDarkMode ? 'dark' : 'light';
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isDarkMode]);
 
   const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    if (!isDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
-
-  const handleMenuToggle = () => {
-    setIsMenuOpen((prev) => !prev);
-    toggleSidebar();
+    setIsDarkMode((prev) => {
+      const nextTheme = !prev;
+      document.documentElement.classList.toggle('dark', nextTheme);
+      document.documentElement.style.colorScheme = nextTheme ? 'dark' : 'light';
+      localStorage.setItem('theme', nextTheme ? 'dark' : 'light');
+      return nextTheme;
+    });
   };
 
   const getRoleColor = (role) => {
@@ -49,22 +53,23 @@ const Header = ({ toggleSidebar }) => {
   };
 
   return (
-    <header className="bg-white dark:bg-[#1A1A1A] border-b border-gray-200 dark:border-[#4A4A4A] px-4 py-3 flex items-center justify-between shadow-sm sticky top-0 z-20">
-      {/* Izquierda: hamburguesa animada */}
-      <div className="flex items-center gap-3">
-        <label className="hb-label">
-          <input
-            type="checkbox"
-            className="hb-checkbox"
-            checked={isMenuOpen}
-            onChange={handleMenuToggle}
-          />
-          <span className="hb-line hb-line1" />
-          <span className="hb-line hb-line2" />
-          <span className="hb-line hb-line3" />
-        </label>
+    <header className="bg-white dark:bg-[#1A1A1A] border-b border-gray-200 dark:border-[#4A4A4A] px-4 py-3 flex items-center justify-between gap-4 shadow-sm sticky top-0 z-20">
+      <div className="flex items-center gap-3 flex-shrink-0">
+        {isMobile && (
+          <label className="hb-label">
+            <input
+              type="checkbox"
+              className="hb-checkbox"
+              checked={sidebarOpen}
+              onChange={toggleSidebar}
+            />
+            <span className="hb-line hb-line1" />
+            <span className="hb-line hb-line2" />
+            <span className="hb-line hb-line3" />
+          </label>
+        )}
 
-        <div className="hidden sm:flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <span className="w-1.5 h-5 rounded-full bg-[#D35400]" />
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white tracking-tight">
             Ferretería Urkupiña
@@ -72,8 +77,7 @@ const Header = ({ toggleSidebar }) => {
         </div>
       </div>
 
-      {/* Derecha: switch de tema + usuario */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 flex-shrink-0">
         <label className="theme-switch">
           <input
             type="checkbox"
@@ -106,7 +110,6 @@ const Header = ({ toggleSidebar }) => {
       </div>
 
       <style>{`
-        /* --- Hamburguesa (Uiverse: JkHuger, adaptada) --- */
         .hb-label {
           position: relative;
           width: 34px;
@@ -154,7 +157,6 @@ const Header = ({ toggleSidebar }) => {
           opacity: 0;
         }
 
-        /* --- Switch de tema (Uiverse: Admin12121, adaptado) --- */
         .theme-switch {
           position: relative;
           display: inline-flex;

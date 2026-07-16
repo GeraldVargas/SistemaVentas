@@ -5,6 +5,18 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>front</title>
+    <script>
+      (() => {
+        try {
+          const savedTheme = localStorage.getItem('theme');
+          const isDarkMode = savedTheme === 'dark';
+          document.documentElement.classList.toggle('dark', isDarkMode);
+          document.documentElement.style.colorScheme = isDarkMode ? 'dark' : 'light';
+        } catch (error) {
+          document.documentElement.style.colorScheme = 'light';
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
